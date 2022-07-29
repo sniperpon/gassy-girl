@@ -41,7 +41,7 @@ Put these contents into a "gassy-girl/.vscode/launch.json" file:
   "configurations": [
     {
       "type": "blazorwasm",
-      "name": "Launch and Debug Blazor WebAssembly Application",
+      "name": "Debug Blazor WebAssembly",
       "request": "launch",
       "cwd": "${workspaceFolder}/GassyGirl/Application",
       "url": "http://localhost:5114",

@@ -4,14 +4,18 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 
 ## Links
 
-- Visual Studio Code [user manual](https://code.visualstudio.com/docs).
-- Open VSX [Registry](https://open-vsx.org).
-- C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
-- Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug)
-- Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
-- Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
-- PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
-- Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly)
+* Visual Studio Code [user manual](https://code.visualstudio.com/docs).
+* Open VSX [Registry](https://open-vsx.org).
+* C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
+* Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug).
+* Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
+* Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
+* PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
+* Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly).
+* Icons:
+  * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon)
+  * Blue [notebook](https://www.iconfinder.com/icons/1519778/book_colorful_notebook_office_school_icon)
+  * Smiling [girl](https://www.iconfinder.com/icons/2903220/girl_smiley_icon)
 
 ## Initial Setup
 

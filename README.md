@@ -40,6 +40,11 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
   * Only use this when you absolutely must debug C# code: you do not get the hot reloading for some reason, so UI changes are cumbersome.
   * This also leaves rogue processes, which you need to manually clean up with the "ps ax | grep dotnet" and "kill NNNNNN" bash commands. They will appear as the one or two newest processes in the grep output.
 
+## Publishing
+* From the "GassyGirl/Client" directory, issue this command: dotnet publish -c Release
+* Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net6.0/publish/wwwroot/* /some/destination
+* Modify the "base" tag within the index.html file in the destination; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
+
 ## Launch JSON File
 
 Put these contents into your "gassy-girl/.vscode/launch.json" file. The Firefox attach one doesn't work for debugging, but I'm including it since I think it's very close.

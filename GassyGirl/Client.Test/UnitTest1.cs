@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ApplicationTest;
+namespace Client.Test;
 
 [TestClass]
 public class UnitTest1

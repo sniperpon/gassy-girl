@@ -41,9 +41,11 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
   * This also leaves rogue processes, which you need to manually clean up with the "ps ax | grep dotnet" and "kill NNNNNN" bash commands. They will appear as the one or two newest processes in the grep output.
 
 ## Publishing
+* Modify the "base" tag within the wwwroot/index.html file; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
 * From the "GassyGirl/Client" directory, issue this command: dotnet publish -c Release
 * Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net6.0/publish/wwwroot/* /some/destination
-* Modify the "base" tag within the index.html file in the destination; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
+* Undo your change to wwwroot/index.html; if you leave it with a path other than "/", "dotnet watch" will no longer work.
+* Access the application at the hosted URL in a browser. You should have the option to install it, as well as use it as a normal web site.
 
 ## Launch JSON File
 

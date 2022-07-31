@@ -1,9 +1,16 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Gassy Girl - Manage Records</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="content content-records">
+    <h1><img src="images/records-192.png" class="content-icon"> Manage Records</h1>
 
-Welcome to your new app.
+    @if (numberOfRecords == 0)
+    {
+    <p>There is no data here, presently! Try adding a record.</p>
+    }
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private int numberOfRecords = 1;
+}

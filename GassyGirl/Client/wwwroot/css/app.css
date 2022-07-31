@@ -19,7 +19,19 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+}
+
+.content-records {
+    background-color: #3769a5;
+}
+
+.content-icon {
+    height: auto;
+    width: 40px;
+    vertical-align: top;
 }
 
 .valid.modified:not([type=checkbox]) {

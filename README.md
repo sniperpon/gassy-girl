@@ -4,14 +4,20 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 
 ## Links
 
-- Visual Studio Code [user manual](https://code.visualstudio.com/docs).
-- Open VSX [Registry](https://open-vsx.org).
-- C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
-- Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug)
-- Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
-- Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
-- PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
-- Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly)
+* Visual Studio Code [user manual](https://code.visualstudio.com/docs).
+* Open VSX [Registry](https://open-vsx.org).
+* C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
+* Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug).
+* Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
+* Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
+* PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
+* Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly).
+* Icons requiring attribution:
+  * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon).
+  * Smiling [girl](https://www.iconfinder.com/icons/2903220/girl_smiley_icon).
+  * Database [record](https://www.iconfinder.com/search?q=data&price=free).
+  * Bar [graph](https://www.iconfinder.com/search?q=graph&price=free).
+  * Import and Export [ship](https://www.iconfinder.com/search?q=export&price=free).
 
 ## Initial Setup
 
@@ -41,9 +47,11 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
   * This also leaves rogue processes, which you need to manually clean up with the "ps ax | grep dotnet" and "kill NNNNNN" bash commands. They will appear as the one or two newest processes in the grep output.
 
 ## Publishing
+* Modify the "base" tag within the wwwroot/index.html file; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
 * From the "GassyGirl/Client" directory, issue this command: dotnet publish -c Release
 * Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net6.0/publish/wwwroot/* /some/destination
-* Modify the "base" tag within the index.html file in the destination; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
+* Undo your change to wwwroot/index.html; if you leave it with a path other than "/", "dotnet watch" will no longer work.
+* Access the application at the hosted URL in a browser. You should have the option to install it, as well as use it as a normal web site.
 
 ## Launch JSON File
 

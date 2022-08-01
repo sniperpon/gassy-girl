@@ -9,13 +9,39 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: #1861ac;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #4e9bd4;
+    border-color: #4e9bd4;
+}
+
+.btn-primary:hover {
+    background-color: #3769a5;
+    border-color: #3769a5;
+}
+
+.btn-primary:focus {
+    background-color: #3769a5;
+    border-color: #3769a5;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #888;
+    border-color: #888;
+}
+
+.btn-secondary:hover {
+    background-color: #666;
+    border-color: #666;
+}
+
+.btn-secondary:focus {
+    background-color: #666;
+    border-color: #666;
 }
 
 .content {
@@ -30,8 +56,16 @@ a, .btn-link {
 
 .content-icon {
     height: auto;
-    width: 40px;
-    vertical-align: top;
+    width: 32px;
+    vertical-align: text-top;
+}
+
+@media (max-width: 640.98px) {
+    .content-icon {
+        height: auto;
+        width: 32px;
+        vertical-align: text-bottom;
+    }
 }
 
 .valid.modified:not([type=checkbox]) {

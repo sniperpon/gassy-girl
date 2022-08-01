@@ -1,16 +1,185 @@
 ﻿@page "/"
 
-<PageTitle>Gassy Girl - Manage Records</PageTitle>
+<PageTitle>Gassy Girl - Manage Mileage</PageTitle>
 
+@* This is the data display table *@
 <div class="content content-records">
-    <h1><img src="images/records-192.png" class="content-icon"> Manage Records</h1>
+    <h1><img src="images/records-192.png" class="content-icon"> Mileage</h1>
 
-    @if (numberOfRecords == 0)
-    {
-    <p>There is no data here, presently! Try adding a record.</p>
-    }
+    <table class="table table-primary">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Car Model</th>
+                <th>Trip Odometer</th>
+                <th>Gallons</th>
+                <th>Price per Gallon</th>
+                <th>Odometer</th>
+                <th><button type="button" @onclick="AddRecord" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-plus" aria-hidden="true"></span></button></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in records)
+            {
+                <tr>
+                    <td>@record.Date.ToShortDateString()</td>
+                    <td>@record.CarModel</td>
+                    <td>@record.TripOdometer</td>
+                    <td>@record.Gallons</td>
+                    <td>@record.PricePerGallon</td>
+                    <td>@record.Odometer</td>
+                    <td><button type="button" @onclick="@(e => EditRecord(record.Id))" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Total Records: (@records.Count(record => !string.IsNullOrEmpty(record.CarModel)))</p>
+
+    @* This is the modal edit form *@
+    <EditForm EditContext="@editContext" OnValidSubmit="@Submit">
+        <DataAnnotationsValidator />
+
+        <DialogBox Title="Add Mileage Record">
+            <Body>
+                <ValidationSummary />
+
+                <table class="table table-borderless" style="color: white">
+                    <tbody>
+                        <tr>
+                            <td>Date: </td><td><InputDate id="name" @bind-Value="currentRecord.Date" /></td>
+                        </tr>
+                        <tr>
+                            <td>Car: </td>
+                            <td>
+                                <InputSelect @bind-Value="currentRecord.CarModel">
+                                    <option value="Select a car">Select a car</option>
+
+                                    @foreach (var carSelection in carSelections)
+                                    {
+                                        <option value="@carSelection">@carSelection</option>
+                                    }
+                                </InputSelect>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Trip Odometer: </td><td><InputNumber @bind-Value="currentRecord.TripOdometer" /></td>
+                        </tr>
+                        <tr>
+                            <td>Gallons: </td><td><InputNumber @bind-Value="currentRecord.Gallons" /></td>
+                        </tr>
+                        <tr>
+                            <td>Price per Gallon: </td><td><InputNumber @bind-Value="currentRecord.PricePerGallon" /></td>
+                        </tr>
+                        <tr>
+                            <td>Odometer: </td><td><InputNumber @bind-Value="currentRecord.Odometer" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Body>
+            <Footer>
+                <button type="submit" class="btn btn-primary shadow-none" disabled="@formInvalid" data-bs-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
+            </Footer>
+        </DialogBox>
+    </EditForm>
 </div>
 
 @code {
-    private int numberOfRecords = 1;
+    private List<MileageRecord> records = new();
+    private List<Car> cars = new();
+    private List<string> carSelections = new();
+
+    // This holds the record currently being added or edited
+    private MileageRecord currentRecord = new();
+
+    // These variables help with form validation and operation
+    private EditContext? editContext;
+    private bool formInvalid = false;
+    private bool editMode = false;
+
+    // This event handler trips when the component is initialized
+    protected override void OnInitialized()
+    {
+        editContext = new(currentRecord);
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        // Populate the records and cars
+        PopulateData();
+    }
+
+    // This method populates our data
+    private void PopulateData()
+    {
+        // TODO: Finish getting this data population to work
+        // TODO: Add a red delete button, corresponding logic
+        // TODO: Inject a C# repository class to handle data retrieval
+
+        // Populate the cars
+        Car testCar = new();
+        testCar.Make = "Nissan";
+        testCar.Model = "350z";
+        testCar.Trim = "Touring";
+        testCar.Year = 2003;
+        cars.Add(testCar);
+
+        // Loop through the cars and populate the selections
+        foreach (var car in cars)
+            carSelections.Add(car.Model + " " + car.Trim);
+
+        // Populate the records
+        MileageRecord testRecord = new();
+        testRecord.CarModel = "350z";
+        testRecord.TripOdometer = 312.4;
+        testRecord.Gallons = 13.28;
+        testRecord.PricePerGallon = 4.148;
+        testRecord.Odometer = 69721;
+    }
+
+    // This event handler trips when the user clicks the green plus icon
+    private void AddRecord()
+    {
+        editMode = false;
+
+        // Instantiate a fresh record for them
+        currentRecord = new();
+    }
+
+    // This event handler trips when the user clicks the yellow pencil icon
+    private void EditRecord(Guid id)
+    {
+        editMode = true;
+
+        // Find the record for which they clicked the edit icon
+        foreach (var record in records)
+            if (record.Id == id)
+                currentRecord = record;
+    }
+
+    // This event handler trips when the user clicks the save button
+    private void Submit()
+    {
+        // If we are not editing an existing record, save this newly-created record
+        if (!editMode)
+            records.Add(currentRecord);
+    }
+
+    // This event handler marks whether or not the form is valid
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            formInvalid = !editContext.Validate();
+            StateHasChanged();
+        }
+    }
+
+    // This method performs cleanup duties
+    public void Dispose()
+    {
+        if (editContext is not null)
+        {
+            editContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
 }

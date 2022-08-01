@@ -34,7 +34,7 @@
         </tbody>
     </table>
 
-    <p>Total Records: (@records.Count(record => !string.IsNullOrEmpty(record.CarModel)))</p>
+    <p>Records: @records.Count(record => !string.IsNullOrEmpty(record.CarModel))</p>
 
     @* This is the modal edit form *@
     <EditForm EditContext="@editContext" OnValidSubmit="@Submit">
@@ -78,8 +78,9 @@
                 </table>
             </Body>
             <Footer>
-                <button type="submit" class="btn btn-primary shadow-none" disabled="@formInvalid" data-bs-dismiss="modal">Save</button>
+                <button type="submit" disabled="@formInvalid" class="btn btn-primary shadow-none" data-bs-dismiss="modal">Save</button>
                 <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" @onclick="DeleteRecord" disabled="@(!editMode)" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
             </Footer>
         </DialogBox>
     </EditForm>
@@ -111,10 +112,6 @@
     // This method populates our data
     private void PopulateData()
     {
-        // TODO: Finish getting this data population to work
-        // TODO: Add a red delete button, corresponding logic
-        // TODO: Inject a C# repository class to handle data retrieval
-
         // Populate the cars
         Car testCar = new();
         testCar.Make = "Nissan";
@@ -129,11 +126,12 @@
 
         // Populate the records
         MileageRecord testRecord = new();
-        testRecord.CarModel = "350z";
+        testRecord.CarModel = "350z Touring";
         testRecord.TripOdometer = 312.4;
         testRecord.Gallons = 13.28;
         testRecord.PricePerGallon = 4.148;
         testRecord.Odometer = 69721;
+        records.Add(testRecord);
     }
 
     // This event handler trips when the user clicks the green plus icon
@@ -154,6 +152,16 @@
         foreach (var record in records)
             if (record.Id == id)
                 currentRecord = record;
+    }
+
+    // This event handler trips when the user clicks the red delete button
+    private void DeleteRecord()
+    {
+        editMode = false;
+
+        // Remove the record from the collection and instantiate a new current record
+        records.Remove(currentRecord);
+        currentRecord = new();
     }
 
     // This event handler trips when the user clicks the save button

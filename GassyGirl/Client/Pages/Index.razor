@@ -11,10 +11,7 @@
             <tr>
                 <th>Date</th>
                 <th>Car Model</th>
-                <th>Trip Odometer</th>
-                <th>Gallons</th>
-                <th>Price per Gallon</th>
-                <th>Odometer</th>
+                <th>Miles per Gallon</th>
                 <th><button type="button" @onclick="AddRecord" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-plus" aria-hidden="true"></span></button></th>
             </tr>
         </thead>
@@ -24,10 +21,7 @@
                 <tr>
                     <td>@record.Date.ToShortDateString()</td>
                     <td>@record.CarModel</td>
-                    <td>@record.TripOdometer</td>
-                    <td>@record.Gallons</td>
-                    <td>@record.PricePerGallon</td>
-                    <td>@record.Odometer</td>
+                    <td>@(Math.Round(record.TripOdometer / record.Gallons, 2))</td>
                     <td><button type="button" @onclick="@(e => EditRecord(record.Id))" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-pencil" aria-hidden="true"></span></button></td>
                 </tr>
             }

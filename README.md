@@ -12,6 +12,9 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
 * PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
 * Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly).
+* HAVIT Blazor [Library](https://havit.blazor.eu).
+* SQLLite with C# [instructions](https://zetcode.com/csharp/sqlite/).
+* Open Iconic [list](https://useiconic.com/open#icons).
 * Icons requiring attribution:
   * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon).
   * Smiling [girl](https://www.iconfinder.com/icons/2903220/girl_smiley_icon).
@@ -27,6 +30,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Install .Net Framework:
   * sudo pacman -S dotnet-runtime dotnet-sdk aspnet-runtime
   * dotnet --list-sdks
+  * sudo dotnet workload install wasm-tools
 * Create .Net Solution, plus Blazor PWA and test projects:
   * dotnet new sln --output GassyGirl
   * cd GassyGirl

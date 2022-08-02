@@ -1,16 +1,179 @@
 ﻿@page "/"
+@implements IDisposable
+@inject IRecordsRepository RecordsRepository
 
-<PageTitle>Gassy Girl - Manage Records</PageTitle>
+<PageTitle>Gassy Girl - Manage Mileage</PageTitle>
 
+@* This is the data display table *@
 <div class="content content-records">
-    <h1><img src="images/records-192.png" class="content-icon"> Manage Records</h1>
+    <h1><img src="images/records-192.png" class="content-icon"> Mileage</h1>
 
-    @if (numberOfRecords == 0)
-    {
-    <p>There is no data here, presently! Try adding a record.</p>
-    }
+    <table class="table table-primary">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Car Model</th>
+                <th>Miles per Gallon</th>
+                <th><button type="button" @onclick="AddRecord" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-plus" aria-hidden="true"></span></button></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in records)
+            {
+                <tr>
+                    <td>@record.Date.ToShortDateString()</td>
+                    <td>@record.CarModel</td>
+                    <td>@(Math.Round(record.TripOdometer / record.Gallons, 2))</td>
+                    <td><button type="button" @onclick="@(e => EditRecord(record.Id))" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Records: @records.Count(record => !string.IsNullOrEmpty(record.CarModel))</p>
+
+    @* This is the modal edit form *@
+    <EditForm EditContext="@editContext" OnValidSubmit="@Submit">
+        <DataAnnotationsValidator />
+
+        <DialogBox Title="Add Mileage Record">
+            <Body>
+                <ValidationSummary />
+
+                <table class="table table-borderless" style="color: white">
+                    <tbody>
+                        <tr>
+                            <td>Date: </td><td><InputDate id="name" @bind-Value="currentRecord.Date" /></td>
+                        </tr>
+                        <tr>
+                            <td>Car: </td>
+                            <td>
+                                <InputSelect @bind-Value="currentRecord.CarModel">
+                                    <option value="Select a car">Select a car</option>
+
+                                    @foreach (var carSelection in carSelections)
+                                    {
+                                        <option value="@carSelection">@carSelection</option>
+                                    }
+                                </InputSelect>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Trip Odometer: </td><td><InputNumber @bind-Value="currentRecord.TripOdometer" /></td>
+                        </tr>
+                        <tr>
+                            <td>Gallons: </td><td><InputNumber @bind-Value="currentRecord.Gallons" /></td>
+                        </tr>
+                        <tr>
+                            <td>Price per Gallon: </td><td><InputNumber @bind-Value="currentRecord.PricePerGallon" /></td>
+                        </tr>
+                        <tr>
+                            <td>Odometer: </td><td><InputNumber @bind-Value="currentRecord.Odometer" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Body>
+            <Footer>
+                <button type="submit" disabled="@formInvalid" class="btn btn-primary shadow-none" data-bs-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" @onclick="DeleteRecord" disabled="@(!editMode)" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+            </Footer>
+        </DialogBox>
+    </EditForm>
 </div>
 
 @code {
-    private int numberOfRecords = 1;
+    private List<MileageRecord> records = new();
+    private List<Car> cars = new();
+    private List<string> carSelections = new();
+
+    // This holds the record currently being added or edited
+    private MileageRecord currentRecord = new();
+
+    // These variables help with form validation and operation
+    private EditContext? editContext;
+    private bool formInvalid = false;
+    private bool editMode = false;
+
+    // This event handler trips when the component is initialized
+    protected override void OnInitialized()
+    {
+        editContext = new(currentRecord);
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        // Populate the records and cars
+        PopulateData();
+    }
+
+    // This method populates our data
+    private void PopulateData()
+    {
+        // Populate the cars
+        cars = RecordsRepository.GetCars();
+
+        // Loop through the cars and populate the car selections
+        foreach (var car in cars)
+            carSelections.Add(car.Model + " " + car.Trim);
+
+        // Populate the records
+        records = RecordsRepository.GetMileageRecords();
+    }
+
+    // This event handler trips when the user clicks the green plus icon
+    private void AddRecord()
+    {
+        editMode = false;
+
+        // Instantiate a fresh record for them
+        currentRecord = new();
+    }
+
+    // This event handler trips when the user clicks the yellow pencil icon
+    private void EditRecord(Guid id)
+    {
+        editMode = true;
+
+        // Find the record for which they clicked the edit icon
+        foreach (var record in records)
+            if (record.Id == id)
+                currentRecord = record;
+    }
+
+    // This event handler trips when the user clicks the red delete button
+    private void DeleteRecord()
+    {
+        editMode = false;
+
+        // Remove the record from the collection and instantiate a new current record
+        records.Remove(currentRecord);
+        currentRecord = new();
+    }
+
+    // This event handler trips when the user clicks the save button
+    private void Submit()
+    {
+        // If we are not editing an existing record, add this newly-created record
+        if (!editMode)
+            records.Add(currentRecord);
+
+        // Save the user's new or edited record to the data store
+        RecordsRepository.SaveMileageRecord(currentRecord);
+    }
+
+    // This event handler marks whether or not the form is valid
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            formInvalid = !editContext.Validate();
+            StateHasChanged();
+        }
+    }
+
+    // This method performs cleanup duties
+    public void Dispose()
+    {
+        if (editContext is not null)
+            editContext.OnFieldChanged -= HandleFieldChanged;
+    }
 }

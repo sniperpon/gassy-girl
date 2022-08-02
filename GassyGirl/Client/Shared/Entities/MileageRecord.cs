@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-internal class MileageRecord {
+public class MileageRecord {
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public DateTime Date { get; set; } = System.DateTime.Now;

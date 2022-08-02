@@ -1,4 +1,6 @@
 ﻿@page "/"
+@implements IDisposable
+@inject RecordsRepository RecordsRepository
 
 <PageTitle>Gassy Girl - Manage Mileage</PageTitle>
 
@@ -180,8 +182,6 @@
     public void Dispose()
     {
         if (editContext is not null)
-        {
             editContext.OnFieldChanged -= HandleFieldChanged;
-        }
     }
 }

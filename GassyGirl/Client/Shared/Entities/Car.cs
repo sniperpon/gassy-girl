@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-internal class Car {
+public class Car {
     [Required]
     public string Make { get; set; } = "Make";
 

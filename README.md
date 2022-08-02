@@ -13,7 +13,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
 * Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly).
 * HAVIT Blazor [Library](https://havit.blazor.eu).
-* IndexedDB [in](https://blog.stevensanderson.com/2019/08/03/blazor-indexeddb) Blazor.
+* SQLLite with C# [instructions](https://zetcode.com/csharp/sqlite/).
 * Open Iconic [list](https://useiconic.com/open#icons).
 * Icons requiring attribution:
   * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon).

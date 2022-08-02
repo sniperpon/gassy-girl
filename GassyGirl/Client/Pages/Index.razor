@@ -1,6 +1,6 @@
 ﻿@page "/"
 @implements IDisposable
-@inject RecordsRepository RecordsRepository
+@inject IRecordsRepository RecordsRepository
 
 <PageTitle>Gassy Girl - Manage Mileage</PageTitle>
 
@@ -109,25 +109,14 @@
     private void PopulateData()
     {
         // Populate the cars
-        Car testCar = new();
-        testCar.Make = "Nissan";
-        testCar.Model = "350z";
-        testCar.Trim = "Touring";
-        testCar.Year = 2003;
-        cars.Add(testCar);
+        cars = RecordsRepository.GetCars();
 
-        // Loop through the cars and populate the selections
+        // Loop through the cars and populate the car selections
         foreach (var car in cars)
             carSelections.Add(car.Model + " " + car.Trim);
 
         // Populate the records
-        MileageRecord testRecord = new();
-        testRecord.CarModel = "350z Touring";
-        testRecord.TripOdometer = 312.4;
-        testRecord.Gallons = 13.28;
-        testRecord.PricePerGallon = 4.148;
-        testRecord.Odometer = 69721;
-        records.Add(testRecord);
+        records = RecordsRepository.GetMileageRecords();
     }
 
     // This event handler trips when the user clicks the green plus icon
@@ -163,9 +152,12 @@
     // This event handler trips when the user clicks the save button
     private void Submit()
     {
-        // If we are not editing an existing record, save this newly-created record
+        // If we are not editing an existing record, add this newly-created record
         if (!editMode)
             records.Add(currentRecord);
+
+        // Save the user's new or edited record to the data store
+        RecordsRepository.SaveMileageRecord(currentRecord);
     }
 
     // This event handler marks whether or not the form is valid

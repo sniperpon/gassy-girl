@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
 public class Car {
+    public Guid Id { get; set; } = Guid.NewGuid();
+
     [Required]
     public string Make { get; set; } = "Make";
 

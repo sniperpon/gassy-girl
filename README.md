@@ -30,6 +30,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Install .Net Framework:
   * sudo pacman -S dotnet-runtime dotnet-sdk aspnet-runtime
   * dotnet --list-sdks
+  * sudo dotnet workload install wasm-tools
 * Create .Net Solution, plus Blazor PWA and test projects:
   * dotnet new sln --output GassyGirl
   * cd GassyGirl

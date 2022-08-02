@@ -6,14 +6,14 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 
 * Visual Studio Code [user manual](https://code.visualstudio.com/docs).
 * Open VSX [Registry](https://open-vsx.org).
-* C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
-* Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug).
-* Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
-* Blazor docs [docs](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
-* PWA Google Play [docs](https://developers.google.com/codelabs/pwa-in-play).
-* Example [application](https://github.com/dotnet/blazor-samples/tree/main/6.0/BlazorSample_WebAssembly).
-* HAVIT Blazor [Library](https://havit.blazor.eu).
-* SQLLite with C# [instructions](https://zetcode.com/csharp/sqlite/).
+* VS Code C# [support](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
+* VS Code Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug).
+* VS Code Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
+* Blazor [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
+* IndexedDB [documentation](https://javascript.info/indexeddb).
+* JavaScript interop [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-javascript-from-dotnet?view=aspnetcore-6.0#synchronous-js-interop-in-blazor-webassembly-apps).
+* PWA in Google Play [documentation](https://developers.google.com/codelabs/pwa-in-play).
+* HAVIT Blazor component [Library](https://havit.blazor.eu).
 * Open Iconic [list](https://useiconic.com/open#icons).
 * Icons requiring attribution:
   * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon).

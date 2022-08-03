@@ -54,17 +54,42 @@ a, .btn-link {
     background-color: #3769a5;
 }
 
+.content-cars {
+    background-color: #e0c53c;
+}
+
+.content-importexport {
+    background-color: #993839;
+}
+
+.content-importexport-area {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #cc4b4c;
+}
+
+.content-analyze {
+    background-color: #559264;
+}
+
+.content-analyze-area {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #63ab74;
+}
+
 .content-icon {
     height: auto;
-    width: 32px;
-    vertical-align: text-top;
+    width: 30px;
+    vertical-align: baseline;
 }
 
 @media (max-width: 640.98px) {
     .content-icon {
         height: auto;
-        width: 32px;
-        vertical-align: text-bottom;
+        width: 28px;
+        vertical-align: middle;
+        margin-bottom: 4px;
     }
 }
 

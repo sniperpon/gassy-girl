@@ -1,0 +1,156 @@
+﻿@page "/managecars"
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Gassy Girl - Manage Cars</PageTitle>
+
+@* This is the data display table *@
+<div class="content content-cars">
+    <h1><img src="images/car-192.png" class="content-icon"> Cars</h1>
+
+    <table class="table table-warning">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Model</th>
+                <th>Trim</th>
+                <th><button type="button" @onclick="AddCar" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-plus" aria-hidden="true"></span></button></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in cars)
+            {
+                <tr>
+                    <td>@car.Year.ToString()</td>
+                    <td>@car.Model</td>
+                    <td>@car.Trim</td>
+                    <td><button type="button" @onclick="@(e => EditCar(car.Id))" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Records: @cars.Count(car => !string.IsNullOrEmpty(car.Model))</p>
+
+    @* This is the modal edit form *@
+    <EditForm EditContext="@editContext" OnValidSubmit="@Submit">
+        <DataAnnotationsValidator />
+
+        <DialogBox Title="Add Car">
+            <Body>
+                <ValidationSummary />
+
+                <table class="table table-borderless" style="color: white">
+                    <tbody>
+                        <tr>
+                            <td>Year: </td><td><InputNumber id="year" @bind-Value="currentCar.Year" /></td>
+                        </tr>
+                        <tr>
+                            <td>Make: </td><td><InputText id="make" @bind-Value="currentCar.Make" /></td>
+                        </tr>
+                        <tr>
+                            <td>Model: </td><td><InputText id="model" @bind-Value="currentCar.Model" /></td>
+                        </tr>
+                        <tr>
+                            <td>Trim (Optional): </td><td><InputText id="trim" @bind-Value="currentCar.Trim" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Body>
+            <Footer>
+                <button type="submit" disabled="@formInvalid" class="btn btn-primary shadow-none" data-bs-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" @onclick="DeleteCar" disabled="@(!editMode)" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+            </Footer>
+        </DialogBox>
+    </EditForm>
+</div>
+
+@code {
+    private List<Car> cars = new();
+
+    // This holds the car currently being added or edited
+    private Car currentCar = new();
+
+    // These variables help with form validation and operation
+    private EditContext? editContext;
+    private bool formInvalid = false;
+    private bool editMode = false;
+
+    // This event handler trips when the component is initialized
+    protected override void OnInitialized()
+    {
+        editContext = new(currentCar);
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        // Populate the records and cars
+        PopulateData();
+    }
+
+    // This method populates our data
+    private async void PopulateData()
+    {
+        // Populate the cars
+        cars = new(await JSRuntime.InvokeAsync<List<Car>>("getCars"));
+        StateHasChanged();
+    }
+
+    // This event handler trips when the user clicks the green plus icon
+    private void AddCar()
+    {
+        editMode = false;
+
+        // Instantiate a fresh record for them
+        currentCar = new();
+    }
+
+    // This event handler trips when the user clicks the yellow pencil icon
+    private void EditCar(Guid id)
+    {
+        editMode = true;
+
+        // Find the record for which they clicked the edit icon
+        foreach (var car in cars)
+            if (car.Id == id)
+                currentCar = car;
+    }
+
+    // This event handler trips when the user clicks the red delete button
+    private async void DeleteCar()
+    {
+        editMode = false;
+
+        // Perform the delete
+        await JSRuntime.InvokeVoidAsync("deleteCar", currentCar);
+
+        // Re-populate the data
+        PopulateData();
+    }
+
+    // This event handler trips when the user clicks the save button
+    private async void Submit()
+    {
+        // Save the user's new or edited car to the data store
+        await JSRuntime.InvokeVoidAsync("saveCar", currentCar);
+
+        // Re-populate the data
+        PopulateData();
+    }
+
+    // This event handler marks whether or not the form is valid
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            formInvalid = !editContext.Validate();
+            StateHasChanged();
+        }
+    }
+
+    // This method performs cleanup duties
+    public void Dispose()
+    {
+        if (editContext is not null)
+            editContext.OnFieldChanged -= HandleFieldChanged;
+    }
+}

@@ -1,6 +1,6 @@
 ﻿@page "/"
 @implements IDisposable
-@inject IRecordsRepository RecordsRepository
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Gassy Girl - Manage Mileage</PageTitle>
 
@@ -106,17 +106,18 @@
     }
 
     // This method populates our data
-    private void PopulateData()
+    private async void PopulateData()
     {
         // Populate the cars
-        cars = RecordsRepository.GetCars();
+        cars = new(await JSRuntime.InvokeAsync<List<Car>>("getCars"));
 
         // Loop through the cars and populate the car selections
         foreach (var car in cars)
             carSelections.Add(car.Model + " " + car.Trim);
 
         // Populate the records
-        records = RecordsRepository.GetMileageRecords();
+        records = new(await JSRuntime.InvokeAsync<List<MileageRecord>>("getMileages"));
+        StateHasChanged();
     }
 
     // This event handler trips when the user clicks the green plus icon
@@ -140,24 +141,25 @@
     }
 
     // This event handler trips when the user clicks the red delete button
-    private void DeleteRecord()
+    private async void DeleteRecord()
     {
         editMode = false;
 
-        // Remove the record from the collection and instantiate a new current record
-        records.Remove(currentRecord);
-        currentRecord = new();
+        // Perform the delete
+        await JSRuntime.InvokeVoidAsync("deleteMileage", currentRecord);
+
+        // Re-populate the data
+        PopulateData();
     }
 
     // This event handler trips when the user clicks the save button
-    private void Submit()
+    private async void Submit()
     {
-        // If we are not editing an existing record, add this newly-created record
-        if (!editMode)
-            records.Add(currentRecord);
-
         // Save the user's new or edited record to the data store
-        RecordsRepository.SaveMileageRecord(currentRecord);
+        await JSRuntime.InvokeVoidAsync("saveMileage", currentRecord);
+
+        // Re-populate the data
+        PopulateData();
     }
 
     // This event handler marks whether or not the form is valid

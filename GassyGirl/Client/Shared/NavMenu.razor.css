@@ -76,12 +76,12 @@
 }
 
 .nav-item-cars ::deep a.active {
-    background-color: #e4bf0a;
+    background-color: #e0c53c;
     color: white;
 }
 
 .nav-item-cars ::deep a.hover {
-    background-color: #e4bf0a;
+    background-color: #e0c53c;
     color: white;
 }
 

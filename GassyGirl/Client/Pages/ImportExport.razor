@@ -12,9 +12,9 @@
         <p>Select a car and a mileage CSV file to import, then click the "Import" button. The file needs to be in <a href="" data-bs-toggle="modal" data-bs-target="#dialogBox">this</a> format.</p>
 
         @* This is the import *@
-        <EditForm EditContext="@editContext" OnValidSubmit="@ImportSubmit">
+        <EditForm EditContext="@editImportContext" OnValidSubmit="@ImportSubmit">
             <p>
-                <InputSelect @bind-Value="selectedCar">
+                <InputSelect @bind-Value="selectedImportCar">
                     <option value="Select a car">Select a car</option>
 
                     @foreach (var car in cars)
@@ -41,9 +41,34 @@
     </div>
 
     <div class="content-importexport-area">
-        <h2>Export</h2>
+        <EditForm EditContext="@editExportContext" OnValidSubmit="@ExportSubmit">
+            <h2>Export</h2>
 
-        <p>Click the "Export" button to download a CSV file containing your mileage data.</p>
+            <p>Select a car then click the "Export" button to download a CSV file containing that car's mileage data.</p>
+
+            @* This is the import *@
+            <p>
+                <InputSelect @bind-Value="selectedExportCar">
+                    <option value="Select a car">Select a car</option>
+
+                    @foreach (var car in cars)
+                    {
+                        <option value="@car.Model @car.Trim">@car.Model @car.Trim</option>
+                    }
+                </InputSelect>
+            </p>
+
+            <p><button type="submit" class="btn btn-warning shadow-none">Export</button></p>
+
+            @if (!string.IsNullOrEmpty(exportSuccess))
+            {
+                <span class="text-success content-importexport-success">@exportSuccess</span>
+            }
+            @if (!string.IsNullOrEmpty(exportError))
+            {
+                <span class="text-danger content-importexport-error">@exportError</span>
+            }
+        </EditForm>
     </div>
 </div>
 
@@ -65,22 +90,30 @@
 </DialogBox>
 
 @code {
-    private EditContext? editContext;
     private List<Car> cars = new();
     private List<string> carSelections = new();
-    private string? selectedCar;
 
     // These member variables have to do with importing
+    private EditContext? editImportContext;
     private List<string[]> csvContents = new List<string[]>();
+    private string? selectedImportCar;
     private string? importSuccess;
     private string? importError;
+
+    // These member variables have to do with exporting
+    private EditContext? editExportContext;
+    private string? selectedExportCar;
+    private string? exportSuccess;
+    private string? exportError;
 
     // This event handler trips when the component is initialized
     protected override void OnInitialized()
     {
-        // Configure the edit context
-        selectedCar = "Select a car";
-        editContext = new(selectedCar);
+        // Configure the edit contexts
+        selectedImportCar = "Select a car";
+        editImportContext = new(selectedImportCar);
+        selectedExportCar = "Select a car";
+        editExportContext = new(selectedExportCar);
 
         // Populate the data
         PopulateData();
@@ -145,7 +178,7 @@
         importError = string.Empty;
 
         // If they didn't select a car, dump out now
-        if (selectedCar == "Select a car")
+        if (selectedImportCar == "Select a car")
         {
             importError = "Please select a car";
             return;
@@ -171,7 +204,7 @@
                 {
                     Id = Guid.NewGuid(),
                     Date = DateTime.Parse(record[0]),
-                    CarModel = selectedCar ?? "",
+                    CarModel = selectedImportCar ?? "",
                     TripOdometer = Double.Parse(record[1]),
                     Gallons = Double.Parse(record[2]),
                     PricePerGallon = Double.Parse(record[3]),
@@ -187,5 +220,48 @@
                 StateHasChanged();
             }
         }
+    }
+
+    // This event handler will handle the export button click
+    private async void ExportSubmit()
+    {
+        List<MileageRecord> records = new();
+        StringBuilder stringBuilder = new();
+        exportSuccess = string.Empty;
+        exportError = string.Empty;
+
+        // If they didn't select a car, dump out now
+        if (selectedExportCar == "Select a car")
+        {
+            exportError = "Please select a car";
+            return;
+        }
+
+        // Fetch the data and order by date descending
+        records = new(await JSRuntime.InvokeAsync<List<MileageRecord>>("getMileages"));
+        records = records.OrderBy(e => e.Date).ToList();
+
+        // Loop over the records and build our CSV file
+        foreach (var record in records)
+        {
+            if (record.CarModel != selectedExportCar) continue;
+
+            // This record is for the correct car, so proceed
+            stringBuilder.AppendLine(
+                @record.Date.ToShortDateString() + "," +
+                @record.TripOdometer.ToString() + "," +
+                @record.Gallons.ToString() + "," +
+                @record.PricePerGallon.ToString() + "," +
+                @record.Odometer.ToString()
+            );
+        }
+
+        // Prepare the file stream and file name
+        var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString()));
+        var fileName = selectedExportCar?.Replace(" ", "") + ".csv";
+
+        // Invoke the download helper
+        using var streamReference = new DotNetStreamReference(stream: fileStream);
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamReference);
     }
 }

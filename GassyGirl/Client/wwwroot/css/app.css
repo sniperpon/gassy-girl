@@ -78,6 +78,18 @@ a, .btn-link {
     background-color: #63ab74;
 }
 
+.content-importexport-success {
+    padding: 5px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.content-importexport-error {
+    padding: 5px;
+    background-color: white;
+    border-radius: 8px;
+}
+
 .content-icon {
     height: auto;
     width: 30px;

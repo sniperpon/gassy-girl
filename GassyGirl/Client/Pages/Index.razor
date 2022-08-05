@@ -115,8 +115,9 @@
         foreach (var car in cars)
             carSelections.Add(car.Model + " " + car.Trim);
 
-        // Populate the records
+        // Populate the records and sort them
         records = new(await JSRuntime.InvokeAsync<List<MileageRecord>>("getMileages"));
+        records = records.OrderByDescending(e => e.Date).ToList();
         StateHasChanged();
     }
 

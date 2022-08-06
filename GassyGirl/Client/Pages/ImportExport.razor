@@ -4,7 +4,7 @@
 <PageTitle>Gassy Girl - Import and Export</PageTitle>
 
 <div class="content content-importexport">
-    <h1><img src="images/export-192.png" class="content-icon"> Import and Export</h1>
+    <h1><img src="images/export-192.png" class="content-icon"> Import, Export</h1>
 
     <div class="content-importexport-area">
         <h2>Import</h2>
@@ -13,19 +13,33 @@
 
         @* This is the import *@
         <EditForm EditContext="@editImportContext" OnValidSubmit="@ImportSubmit">
-            <p>
-                <InputSelect @bind-Value="selectedImportCar">
-                    <option value="Select a car">Select a car</option>
+            <table class="table table-borderless" style="color: white">
+                <tbody>
+                    <tr>
+                        <td>
+                            Car:
+                        </td>
+                        <td>
+                            <InputSelect @bind-Value="selectedImportCar">
+                                <option value="Select a car">Select a car</option>
 
-                    @foreach (var car in cars)
-                    {
-                        <option value="@car.Model @car.Trim">@car.Model @car.Trim</option>
-                    }
-                </InputSelect>
-            </p>
-            <p>
-                <InputFile OnChange="@LoadFile"/>
-            </p>
+                                @foreach (var car in cars)
+                                {
+                                    <option value="@car.Model @car.Trim">@car.Model @car.Trim</option>
+                                }
+                            </InputSelect>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            File:
+                        </td>
+                        <td>
+                            <InputFile OnChange="@LoadFile"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             <p><button type="submit" class="btn btn-warning shadow-none">Import</button></p>
 
@@ -40,23 +54,32 @@
         </EditForm>
     </div>
 
+    @* This is the export *@
     <div class="content-importexport-area">
         <EditForm EditContext="@editExportContext" OnValidSubmit="@ExportSubmit">
             <h2>Export</h2>
 
             <p>Select a car then click the "Export" button to download a CSV file containing that car's mileage data.</p>
 
-            @* This is the import *@
-            <p>
-                <InputSelect @bind-Value="selectedExportCar">
-                    <option value="Select a car">Select a car</option>
+            <table class="table table-borderless" style="color: white">
+                <tbody>
+                    <tr>
+                        <td>
+                            Car:
+                        </td>
+                        <td>
+                            <InputSelect @bind-Value="selectedExportCar">
+                                <option value="Select a car">Select a car</option>
 
-                    @foreach (var car in cars)
-                    {
-                        <option value="@car.Model @car.Trim">@car.Model @car.Trim</option>
-                    }
-                </InputSelect>
-            </p>
+                                @foreach (var car in cars)
+                                {
+                                    <option value="@car.Model @car.Trim">@car.Model @car.Trim</option>
+                                }
+                            </InputSelect>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             <p><button type="submit" class="btn btn-warning shadow-none">Export</button></p>
 

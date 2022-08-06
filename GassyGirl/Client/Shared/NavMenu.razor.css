@@ -7,6 +7,14 @@
     background-color: #444;
 }
 
+@media (max-width: 640.98px) {
+    @-moz-document url-prefix() {
+        .top-row {
+            height: 4.5rem;
+        }
+    }    
+}
+
 .navbar-brand {
     font-size: 1.1rem;
 }

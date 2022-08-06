@@ -4,6 +4,14 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+@media (max-width: 640.98px) {
+    @-moz-document url-prefix() {
+        html, body {
+            font-size: 9pt;
+        }
+    }    
+}
+
 h1:focus {
     outline: none;
 }

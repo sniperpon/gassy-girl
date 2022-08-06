@@ -12,6 +12,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Blazor [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
 * IndexedDB [documentation](https://javascript.info/indexeddb).
 * JavaScript interop [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-javascript-from-dotnet?view=aspnetcore-6.0#synchronous-js-interop-in-blazor-webassembly-apps).
+* Radzen Chart [API](https://www.radzen.com/documentation/blazor/chart)
 * PWA in Google Play [documentation](https://developers.google.com/codelabs/pwa-in-play).
 * HAVIT Blazor component [Library](https://havit.blazor.eu).
 * Open Iconic [list](https://useiconic.com/open#icons).

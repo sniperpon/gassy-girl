@@ -65,6 +65,7 @@ a, .btn-link {
 .content-importexport-area {
     padding: 20px;
     margin-top: 20px;
+    border-radius: 8px;
     background-color: #cc4b4c;
 }
 
@@ -75,6 +76,7 @@ a, .btn-link {
 .content-analyze-area {
     padding: 20px;
     margin-top: 20px;
+    border-radius: 8px;
     background-color: #63ab74;
 }
 
@@ -94,6 +96,10 @@ a, .btn-link {
     height: auto;
     width: 30px;
     vertical-align: baseline;
+}
+
+.rz-tick-text {
+    font-size: 8px;
 }
 
 @media (max-width: 640.98px) {

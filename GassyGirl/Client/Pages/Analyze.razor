@@ -9,10 +9,199 @@
     <div class="content-analyze-area">
         <h2>Run a Report</h2>
 
-        Please select a report.
+        <EditForm EditContext="@editContext" OnValidSubmit="@RunReport">
+            <table class="table table-borderless" style="color: white">
+                <tbody>
+                    <tr>
+                        <td>
+                            Report:
+                        </td>
+                        <td>
+                            <InputSelect @bind-Value="selectedReport">
+                                @foreach (var report in reportList)
+                                {
+                                    <option value="@report">@report</option>
+                                }
+                            </InputSelect>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Car:
+                        </td>
+                        <td>
+                            <InputSelect @bind-Value="selectedCar">
+                                <option value="Select a car">Select a car</option>
+
+                                @foreach (var carSelection in carSelections)
+                                {
+                                    <option value="@carSelection">@carSelection</option>
+                                }
+                            </InputSelect>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Start Date:
+                        </td>
+                        <td>
+                            <InputDate id="startDate" @bind-Value="startTime" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            End Date:
+                        </td>
+                        <td>
+                            <InputDate id="endDate" @bind-Value="endTime" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><button type="submit" class="btn btn-primary shadow-none">Run Report</button></p>
+        </EditForm>
     </div>
+
+    @if(showReport)
+    {
+        <div class="content-analyze-area" style="background-color: white">
+            <div class="row">
+                <div class="col-sm-12 my-5">
+                    <RadzenChart>
+                        <RadzenLineSeries Smooth="false" Data="@graphItems" CategoryProperty="Category" ValueProperty="Value">
+                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                            <RadzenSeriesDataLabels Visible="false" />
+                        </RadzenLineSeries>
+                        <RadzenCategoryAxis Padding="0">
+                            <RadzenAxisTitle Text="@categoryTitle" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                            <RadzenAxisTitle Text="@valueTitle" />
+                            <RadzenSeriesDataLabels Visible="false" />
+                        </RadzenValueAxis>
+                        <RadzenLegend Visible="false" />
+                    </RadzenChart>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
+    // This view-model like mini class is what gets displayed on the chart
+    class GraphItem
+    {
+        public string? Category { get; set; }
+        public double Value { get; set; }
+    }
+    private List<GraphItem> graphItems = new();
 
+    // Here are form-related variables
+    private EditContext? editContext;
+    private List<string> reportList = new();
+    private List<MileageRecord> records = new();
+    private List<Car> cars = new();
+    private List<string> carSelections = new();
+
+    // Here are the user selections
+    private string selectedReport = "Average Mileage";
+    private string selectedCar = "Select a car";
+    private DateTime startTime = DateTime.Now.AddDays(-30);
+    private DateTime endTime = DateTime.Now;
+
+    // These variables control report execution and display
+    private string? categoryTitle;
+    private string? valueTitle;
+    private bool showReport = false;
+
+    // This event handler trips when the component is initialized
+    protected override void OnInitialized()
+    {
+        PopulateData();
+
+        editContext = new(selectedReport);
+        editContext.OnFieldChanged += HandleFieldChanged;
+    }
+
+    // This method populates the form data
+    private async void PopulateData()
+    {
+        // Populate the list of reports
+        reportList.Add("Average Mileage");
+        reportList.Add("Gas Price Over Time");
+        reportList.Add("Miles Driven Over Time");
+
+        // Populate the cars
+        cars = new(await JSRuntime.InvokeAsync<List<Car>>("getCars"));
+
+        // Loop through the cars and populate the car selections
+        foreach (var car in cars)
+            carSelections.Add(car.Model + " " + car.Trim);
+
+        // Fetch the mileage data
+        records = new(await JSRuntime.InvokeAsync<List<MileageRecord>>("getMileages"));
+        records = records.OrderBy(e => e.Date).ToList();
+
+        // Refresh the state
+        StateHasChanged();
+    }
+
+    // This method runs when the report form is submitted
+    private void RunReport()
+    {
+        // Query for the relevant data depending on report type
+        switch (selectedReport)
+        {
+            case "Average Mileage":
+                graphItems.Clear();
+                var relevantMileageRecords = records.Where(r => r.Date >= startTime && r.Date <= endTime && r.CarModel == selectedCar).OrderBy(e => e.Date).ToList();
+
+                // Loop over the records and construct them into our view model
+                foreach (var relevantRecord in relevantMileageRecords)
+                    graphItems.Add(new GraphItem() { Category = relevantRecord.Date.ToShortDateString(), Value = Math.Round(relevantRecord.TripOdometer / relevantRecord.Gallons, 2) });
+
+                // Set the title and break out
+                valueTitle = "Miles per Gallon";
+                break;
+            case "Gas Price Over Time":
+                graphItems.Clear();
+                var relevantPriceRecords = records.Where(r => r.Date >= startTime && r.Date <= endTime && r.CarModel == selectedCar).OrderBy(e => e.Date).ToList();
+
+                // Loop over the records and construct them into our view model
+                foreach (var relevantRecord in relevantPriceRecords)
+                    graphItems.Add(new GraphItem() { Category = relevantRecord.Date.ToShortDateString(), Value = Math.Round(relevantRecord.PricePerGallon, 2) });
+
+                // Set the title and break out
+                valueTitle = "Price per Gallon";
+                break;
+            case "Miles Driven Over Time":
+                graphItems.Clear();
+                var relevantMileRecords = records.Where(r => r.Date >= startTime && r.Date <= endTime && r.CarModel == selectedCar).OrderBy(e => e.Date).ToList();
+
+                // Loop over the records and construct them into our view model
+                foreach (var relevantRecord in relevantMileRecords)
+                    graphItems.Add(new GraphItem() { Category = relevantRecord.Date.ToShortDateString(), Value = Math.Round(relevantRecord.TripOdometer, 2) });
+
+                // Set the title and break out
+                valueTitle = "Trip Odometer";
+                break;
+        }
+
+        // Make the report visible and refresh the view
+        categoryTitle = "Date";
+        showReport = true;
+        StateHasChanged();
+    }
+
+    // This event handler handles form field changes
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            showReport = false;
+            StateHasChanged();
+        }
+    }
 }

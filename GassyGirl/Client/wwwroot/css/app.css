@@ -111,6 +111,17 @@ a, .btn-link {
     border-radius: 8px;
 }
 
+.content-about {
+    background-color: #83301e;
+}
+
+.content-about-area {
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #f27917;
+}
+
 .content-icon {
     height: auto;
     width: 30px;

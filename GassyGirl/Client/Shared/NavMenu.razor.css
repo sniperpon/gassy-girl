@@ -138,6 +138,21 @@
     color: white;
 }
 
+.nav-item-about ::deep a {
+    background-color: #f27917;
+    color: white;
+}
+
+.nav-item-about ::deep a.active {
+    background-color: #83301e;
+    color: white;
+}
+
+.nav-item-about ::deep a.hover {
+    background-color: #83301e;
+    color: white;
+}
+
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;

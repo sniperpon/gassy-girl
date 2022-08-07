@@ -22,6 +22,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
   * Database [record](https://www.iconfinder.com/search?q=data&price=free).
   * Bar [graph](https://www.iconfinder.com/search?q=graph&price=free).
   * Import and Export [ship](https://www.iconfinder.com/search?q=export&price=free).
+  * About exclamation [point](https://www.iconfinder.com/search?q=about&price=free).
 
 ## Initial Setup
 

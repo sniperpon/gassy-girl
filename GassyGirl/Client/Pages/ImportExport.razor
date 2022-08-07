@@ -159,8 +159,9 @@
     // This event handler works with file uploads
     private async void LoadFile(InputFileChangeEventArgs e)
     {
-        // Open a stream into the file
+        // Open a stream into the file and make the CSV contents clean
         var reader = e.File.OpenReadStream();
+        csvContents = new List<string[]>();
 
         // Stream the file into memory
         var memoryStream = new MemoryStream();

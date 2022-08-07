@@ -93,6 +93,21 @@
     color: white;
 }
 
+.nav-item-maintenance ::deep a {
+    background-color: #9576c2;
+    color: white;
+}
+
+.nav-item-maintenance ::deep a.active {
+    background-color: #8500c2;
+    color: white;
+}
+
+.nav-item-maintenance ::deep a.hover {
+    background-color: #8500c2;
+    color: white;
+}
+
 .nav-item-analyze ::deep a {
     background-color: #63ab74;
     color: white;

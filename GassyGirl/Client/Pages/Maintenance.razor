@@ -1,0 +1,244 @@
+@page "/maintenance"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Gassy Girl - Maintenance</PageTitle>
+
+<div class="content content-maintenance">
+    <h1><img src="images/maintenance-192.png" class="content-icon"> Maintenance</h1>
+
+    <div class="content-maintenance-area">
+
+        <EditForm EditContext="@editContext" OnValidSubmit="@Submit">
+            <DataAnnotationsValidator />
+
+            @* This is where the user picks a car *@
+            <table class="table table-borderless" style="color: white">
+                <tbody>
+                    <tr>
+                        <td>Car:</td>
+                        <td>
+                            <InputSelect @bind-Value="selectedCar">
+                                <option value="Select a car">Select a car</option>
+
+                                @foreach (var carSelection in carSelections)
+                                {
+                                    <option value="@carSelection">@carSelection</option>
+                                }
+                            </InputSelect>
+                        </td>
+                    </tr>
+
+                    @* This is where the user picks a maintenance radio button *@
+                    @if (showMaintenanceItems)
+                    {
+                        <tr class="border">
+                            <td>Maintenance Items:</td>
+                            <td>
+                                <InputRadioGroup Name="maintenanceItemButtons" @bind-Value="selectedItem">
+                                    @foreach (var maintenanceItem in maintenanceItems)
+                                    {
+                                        <InputRadio Name="maintenanceItemButtons" Value="maintenanceItem" /><span style="margin-left: 8px;">@maintenanceItem</span><br />
+                                    }
+                                </InputRadioGroup>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @* This is the dialog box where the user adds or edits a record *@
+            <DialogBox Title="Add Maintenance Record">
+                <Body>
+                    <ValidationSummary />
+
+                    <table class="table table-borderless" style="color: white">
+                        <tbody>
+                            <tr>
+                                <td>Date: </td><td><InputDate id="name" @bind-Value="currentRecord.Date" /></td>
+                            </tr>
+                            <tr>
+                                <td>Odometer: </td><td><InputNumber @bind-Value="currentRecord.Odometer" /></td>
+                            </tr>
+                            <tr>
+                                <td>Notes (Optional): </td><td><InputTextArea @bind-Value="currentRecord.Notes" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </Body>
+                <Footer>
+                    <button type="submit" disabled="@formInvalid" class="btn btn-primary shadow-none" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" @onclick="DeleteRecord" disabled="@(!editMode)" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+                </Footer>
+            </DialogBox>
+        </EditForm>
+
+        @if (showMaintenanceItems)
+        {
+            <table class="table table-light">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Car Model</th>
+                        <th>Item</th>
+                        <th><button type="button" @onclick="AddRecord" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-plus" aria-hidden="true"></span></button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in records)
+                    {
+                        <tr>
+                            <td>@record.Date.ToShortDateString()</td>
+                            <td>@record.CarModel</td>
+                            <td>@record.Item</td>
+                            <td><button type="button" @onclick="@(e => EditRecord(record.Id))" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#dialogBox"><span class="oi oi-pencil" aria-hidden="true"></span></button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    // Form-related variables
+    private EditContext? editContext;
+    private bool formInvalid = false;
+    private bool showMaintenanceItems = false;
+    private bool editMode = false;
+
+    // Record-related variables
+    private List<MaintenanceRecord> records = new();
+    private MaintenanceRecord currentRecord = new();
+
+    // Car-related variables
+    private List<Car> cars = new();
+    private List<string> carSelections = new();
+    private string selectedCar = "Select a car";
+
+    // Maintenance item-related variables
+    private List<string> maintenanceItems = new();
+    private string selectedItem = "Oil change";
+
+    // This event handler trips when the component is initialized
+    protected override void OnInitialized()
+    {
+        // Configure the edit context
+        editContext = new(currentRecord);
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        // Populate the records and cars
+        PopulateData();
+    }
+
+    // This event handler controls the form flow
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            // Case our way to the next form step
+            switch (e.FieldIdentifier.FieldName)
+            {
+                case "selectedCar":
+                    showMaintenanceItems = false;
+
+                    // Should we show the maintenance items table yet?
+                    if (selectedCar != "Select a car")
+                        showMaintenanceItems = true;
+
+                    // Repopulate the data and bust out of the case
+                    PopulateData();
+                    break;
+                case "selectedItem":
+                    // Repopulate the data and bust out of the case
+                    PopulateData();
+                    break;
+            }
+        }
+    }
+
+    // This event handler trips when the user clicks the green plus icon
+    private void AddRecord()
+    {
+        editMode = false;
+
+        // Instantiate a fresh record
+        currentRecord = new();
+    }
+
+    // This event handler trips when the user clicks the yellow pencil icon
+    private void EditRecord(Guid id)
+    {
+        editMode = true;
+
+        // Find the record for which they clicked the edit icon
+        foreach (var record in records)
+            if (record.Id == id)
+                currentRecord = record;
+    }
+
+    // This event handler trips when the user clicks the red delete button
+    private async void DeleteRecord()
+    {
+        editMode = false;
+
+        // Perform the delete
+        await JSRuntime.InvokeVoidAsync("deleteMaintenance", currentRecord);
+
+        // Re-populate the data
+        PopulateData();
+    }
+
+    // This event handler trips when the user clicks the save button
+    private async void Submit() {
+        currentRecord.CarModel = selectedCar;
+        currentRecord.Item = selectedItem;
+
+        // Perform the actual save
+        await JSRuntime.InvokeVoidAsync("saveMaintenance", currentRecord);
+
+        // Re-populate the data
+        PopulateData();
+    }
+
+    // This private helper method populates our data
+    private async void PopulateData()
+    {
+        // Populate the cars if they haven't been already
+        if (cars.Count == 0)
+        {
+            // Fetch the cars
+            cars = new(await JSRuntime.InvokeAsync<List<Car>>("getCars"));
+
+            // Loop through the cars and populate the car selections
+            foreach (var car in cars)
+                carSelections.Add(car.Model + " " + car.Trim);
+        }
+
+        // Populate the maintenance items if need be
+        if (maintenanceItems.Count == 0)
+        {
+            maintenanceItems.Add("Oil change");
+            maintenanceItems.Add("Air filter");
+            maintenanceItems.Add("Tire rotation");
+            maintenanceItems.Add("Coolant flush");
+            maintenanceItems.Add("Lights maintenance");
+            maintenanceItems.Add("Belt replacement");
+            maintenanceItems.Add("Transmission fluid");
+            maintenanceItems.Add("Spark plug replacement");
+            maintenanceItems.Add("Differential work");
+            maintenanceItems.Add("Transmission maintenance");
+            maintenanceItems.Add("Other");
+        }
+
+        // Fetch the maintenance items and filter them
+        records = new(await JSRuntime.InvokeAsync<List<MaintenanceRecord>>("getMaintenances"));
+        records = records.Where(r => r.CarModel == selectedCar && r.Item == selectedItem).OrderByDescending(e => e.Date).ToList();
+
+        // Instantiate a fresh record
+        currentRecord = new();
+
+        // Refresh the state
+        StateHasChanged();
+    }
+}

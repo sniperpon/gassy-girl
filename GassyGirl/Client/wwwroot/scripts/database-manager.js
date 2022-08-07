@@ -2,6 +2,8 @@ let databaseName = "GassyGirl";
 let databaseVersion = 1;
 let carStore = "car";
 let mileageStore = "mileage";
+let maintenanceStore = "maintenance";
+let settingsStore = "settings";
 let primaryKey = "id";
 
 
@@ -102,6 +104,33 @@ function fetchMileages() {
     });
 }
 
+window.getMaintenances = () => {
+    return fetchMaintenances().then((data) => { return data});
+}
+
+function fetchMaintenances() {
+    return new Promise((resolve, reject) => {
+        let database = openRequest.result;
+    
+        // Open up a transaction and fetch the object store
+        let transaction = database.transaction(maintenanceStore, "readonly");
+        let maintenanceData = transaction.objectStore(maintenanceStore);
+    
+        // Fetch all of the cars
+        let allMaintenanceData = maintenanceData.getAll();
+    
+        // This handles successful data retrieval
+        allMaintenanceData.onsuccess = function() {
+            resolve(allMaintenanceData.result);
+        };
+
+        // This handles an error in data retrieval
+        allMaintenanceData.onerror = function() {
+            reject();
+        };
+    });
+}
+
 window.saveCar = (car) => {
     let database = openRequest.result;
 
@@ -141,6 +170,27 @@ window.saveMileage = (mileage) => {
     // If the put failed, log the error
     putRequest.onerror = function() {
         console.log("Error while adding the mileage", putRequest.error);
+    }
+}
+
+window.saveMaintenance = (maintenance) => {
+    let database = openRequest.result;
+
+    // Open up a transaction and fetch the object store
+    let transaction = database.transaction(maintenanceStore, "readwrite");
+    let maintenanceData = transaction.objectStore(maintenanceStore);
+
+    // Perform the put, which intelligently inserts or updates
+    let putRequest = maintenanceData.put(maintenance);
+
+    // If the put worked, log a message
+    putRequest.onsuccess = function() {
+        console.log("Maintenance added to the store", putRequest.result);
+    }
+
+    // If the put failed, log the error
+    putRequest.onerror = function() {
+        console.log("Error while adding the maintenance", putRequest.error);
     }
 }
 
@@ -186,6 +236,27 @@ window.deleteMileage = (mileage) => {
     };
 }
 
+window.deleteMaintenance = (maintenance) => {
+    let database = openRequest.result;
+
+    // Open up a transaction and fetch the object store
+    let transaction = database.transaction(maintenanceStore, "readwrite");
+    let maintenanceData = transaction.objectStore(maintenanceStore);
+
+    // Delete the mileage
+    let deleteRequest = maintenanceData.delete(maintenance.id);
+
+    // If the delete worked, then perform the add
+    deleteRequest.onsuccess = function() {
+        console.log("Maintenance deleted from store", deleteRequest.result);
+    };
+
+    // If the delete request failed, log the error
+    deleteRequest.onerror = function() {
+        console.log("Error while deleting the maintenance", deleteRequest.error);
+    };
+}
+
 
 //==================//
 // Helper Functions //
@@ -203,6 +274,16 @@ function initializeDatabase() {
     // Create the mileage object store if we need to
     if (!database.objectStoreNames.contains(mileageStore)) {
         database.createObjectStore(mileageStore, {keyPath: primaryKey});
+    }
+
+    // Create the maintenance object store if we need to
+    if (!database.objectStoreNames.contains(maintenanceStore)) {
+        database.createObjectStore(maintenanceStore, {keyPath: primaryKey});
+    }
+
+    // Create the settings object store if we need to
+    if (!database.objectStoreNames.contains(settingsStore)) {
+         database.createObjectStore(settingsStore, {keyPath: primaryKey});
     }
 }
 

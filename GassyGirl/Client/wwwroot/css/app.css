@@ -66,6 +66,17 @@ a, .btn-link {
     background-color: #e0c53c;
 }
 
+.content-maintenance {
+    background-color: #8500c2;
+}
+
+.content-maintenance-area {
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #9576c2;
+}
+
 .content-importexport {
     background-color: #993839;
 }

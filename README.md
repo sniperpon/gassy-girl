@@ -59,6 +59,19 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Undo your change to wwwroot/index.html; if you leave it with a path other than "/", "dotnet watch" will no longer work.
 * Access the application at the hosted URL in a browser. You should have the option to install it, as well as use it as a normal web site.
 
+## Updating on Play Store
+* Using IntelliJ IDEA installation on work laptop, follow [these](https://developers.google.com/codelabs/pwa-in-play) instructions.
+* Fill in all of the parameters. Some if the trickier ones:
+  * Application id: com.exigentduality.gassygirl
+  * Status bar color: #3769a5
+  * Splash screen color: #444444
+  * Key store location: C:\Users\[UserId]\.android\production.keystore]
+  * Key name and password: Check local notes
+* It will generate an unsigned APK, and fail to sign it. Issue these commands:
+  * jarsigner -verbose -keystore C:\Users\[UserId]\.android\production.keystore -signedjar GassyGirl_signed.apk app-release-unsigned-aligned.apk exigentduality.com
+  * C:\Users\[UserId]\AppData\Local\Android\Sdk\build-tools\30.0.3\zipalign -v 4 GassyGirl_signed.apk GassyGirl.apk
+* Complete the instructions to register the APK as an application in the Play Store console.
+
 ## Launch JSON File
 
 Put these contents into your "gassy-girl/.vscode/launch.json" file. The Firefox attach one doesn't work for debugging, but I'm including it since I think it's very close.

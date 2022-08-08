@@ -59,9 +59,41 @@
                 </tbody>
             </table>
 
-            <p><button type="submit" class="btn btn-primary shadow-none">Run Report</button></p>
+            @if (selectedReport == "Maintenance Record")
+            {
+                <p><button type="submit" class="btn btn-primary shadow-none" data-bs-toggle="modal" data-bs-target="#dialogBox">Run Report</button></p>
+            }
+            else
+            {
+                <p><button type="submit" class="btn btn-primary shadow-none">Run Report</button></p>
+            }
         </EditForm>
     </div>
+
+    <DialogBox Title="Maintenance Report">
+        <Body>
+            <h2>@selectedCar</h2>
+
+            <table class="table table-borderless" style="color: white">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th><th>Item</th><th>Odometer</th><th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var maintenance in maintenances.OrderBy(e => e.Item).ThenByDescending(e => e.Date))
+                    {
+                        <tr>
+                            <td>@maintenance.Date</td><td>@maintenance.Item</td><td>@maintenance.Odometer</td><td>@maintenance.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </Body>
+        <Footer>
+            <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+        </Footer>
+    </DialogBox>
 
     @if(showReport)
     {
@@ -102,6 +134,7 @@
     private EditContext? editContext;
     private List<string> reportList = new();
     private List<MileageRecord> records = new();
+    private List<MaintenanceRecord> maintenances = new();
     private List<Car> cars = new();
     private List<string> carSelections = new();
 
@@ -132,9 +165,11 @@
         reportList.Add("Average Mileage");
         reportList.Add("Gas Price Over Time");
         reportList.Add("Miles Driven Over Time");
+        reportList.Add("Maintenance Record");
 
-        // Populate the cars
+        // Populate the cars and maintenances
         cars = new(await JSRuntime.InvokeAsync<List<Car>>("getCars"));
+        maintenances = new(await JSRuntime.InvokeAsync<List<MaintenanceRecord>>("getMaintenances"));
 
         // Loop through the cars and populate the car selections
         foreach (var car in cars)
@@ -164,6 +199,7 @@
 
                 // Set the title and break out
                 valueTitle = "Miles per Gallon";
+                showReport = true;
                 break;
             case "Gas Price Over Time":
                 graphItems.Clear();
@@ -175,6 +211,7 @@
 
                 // Set the title and break out
                 valueTitle = "Price per Gallon";
+                showReport = true;
                 break;
             case "Miles Driven Over Time":
                 graphItems.Clear();
@@ -186,12 +223,12 @@
 
                 // Set the title and break out
                 valueTitle = "Trip Odometer";
+                showReport = true;
                 break;
         }
 
-        // Make the report visible and refresh the view
+        // Refresh the view
         categoryTitle = "Date";
-        showReport = true;
         StateHasChanged();
     }
 

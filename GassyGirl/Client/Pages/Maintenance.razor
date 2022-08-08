@@ -31,15 +31,15 @@
                     @* This is where the user picks a maintenance radio button *@
                     @if (showMaintenanceItems)
                     {
-                        <tr class="border">
+                        <tr>
                             <td>Maintenance Items:</td>
                             <td>
-                                <InputRadioGroup Name="maintenanceItemButtons" @bind-Value="selectedItem">
+                                <InputSelect @bind-Value="selectedItem">
                                     @foreach (var maintenanceItem in maintenanceItems)
                                     {
-                                        <InputRadio Name="maintenanceItemButtons" Value="maintenanceItem" /><span style="margin-left: 8px;">@maintenanceItem</span><br />
+                                        <option value="@maintenanceItem">@maintenanceItem</option>
                                     }
-                                </InputRadioGroup>
+                                </InputSelect>
                             </td>
                         </tr>
                     }

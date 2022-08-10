@@ -16,13 +16,6 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * PWA in Google Play [documentation](https://developers.google.com/codelabs/pwa-in-play).
 * HAVIT Blazor component [Library](https://havit.blazor.eu).
 * Open Iconic [list](https://useiconic.com/open#icons).
-* Icons requiring attribution:
-  * Fuel [pumps](https://www.iconfinder.com/icons/4059754/and_architecture_fuel_gas_gasoline_pump_station_icon).
-  * Smiling [girl](https://www.iconfinder.com/icons/2903220/girl_smiley_icon).
-  * Database [record](https://www.iconfinder.com/search?q=data&price=free).
-  * Bar [graph](https://www.iconfinder.com/search?q=graph&price=free).
-  * Import and Export [ship](https://www.iconfinder.com/search?q=export&price=free).
-  * About exclamation [point](https://www.iconfinder.com/search?q=about&price=free).
 
 ## Initial Setup
 
@@ -56,21 +49,23 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * Modify the "base" tag within the wwwroot/index.html file; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
 * From the "GassyGirl/Client" directory, issue this command: dotnet publish -c Release
 * Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net6.0/publish/wwwroot/* /some/destination
+* Also issue this command: cp -R wwwroot/.well-known /some/destination
 * Undo your change to wwwroot/index.html; if you leave it with a path other than "/", "dotnet watch" will no longer work.
 * Access the application at the hosted URL in a browser. You should have the option to install it, as well as use it as a normal web site.
 
 ## Updating on Play Store
-* Using IntelliJ IDEA installation on work laptop, follow [these](https://developers.google.com/codelabs/pwa-in-play) instructions.
-* Fill in all of the parameters. Some if the trickier ones:
+* Follow [these](https://developers.google.com/codelabs/pwa-in-play) instructions.
+* Fill in all of the parameters. Some of the trickier ones:
   * Application id: com.exigentduality.gassygirl
   * Status bar color: #3769a5
   * Splash screen color: #444444
   * Key store location: C:\Users\[UserId]\.android\production.keystore]
   * Key name and password: Check local notes
-* It will generate an unsigned APK, and fail to sign it. Issue these commands:
+* Once build is done locally, issue this command: bubblewrap fingerprint <key from .well-known file>
+* Complete the steps in the Google Play console to get the app into the various, cumbersome testing and publishing states.
+* The APK and App Bundle will be signed automatically. But for posterity's sake, if ever the need arises to create a manually-signed API, this is it::
   * jarsigner -verbose -keystore C:\Users\[UserId]\.android\production.keystore -signedjar GassyGirl_signed.apk app-release-unsigned-aligned.apk exigentduality.com
   * C:\Users\[UserId]\AppData\Local\Android\Sdk\build-tools\30.0.3\zipalign -v 4 GassyGirl_signed.apk GassyGirl.apk
-* Complete the instructions to register the APK as an application in the Play Store console.
 
 ## Launch JSON File
 

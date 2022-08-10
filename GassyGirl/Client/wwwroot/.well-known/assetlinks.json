@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.exigentduality.gassygirl",
+                     "sha256_cert_fingerprints": ["44:90:A2:0F:8A:4F:A7:DC:FD:AD:D0:61:9F:5F:C9:03:E0:9F:E9:D5:D4:E1:D4:4C:D8:5C:BC:B9:3A:6F:9B:B1"] }
+      }
+]

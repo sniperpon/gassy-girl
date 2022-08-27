@@ -128,6 +128,13 @@ a, .btn-link {
     vertical-align: baseline;
 }
 
+.footerStatement {
+    margin-top: 20px;
+    font-size: 9pt;
+    color: black;
+    text-align: center;
+}
+
 .rz-tick-text {
     font-size: 8px;
 }

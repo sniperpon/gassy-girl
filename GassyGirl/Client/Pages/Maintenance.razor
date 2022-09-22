@@ -193,6 +193,7 @@
     private async void Submit() {
         currentRecord.CarModel = selectedCar;
         currentRecord.Item = selectedItem;
+        currentRecord.Date = new DateTime(currentRecord.Date.Year, currentRecord.Date.Month, currentRecord.Date.Day);
 
         // Perform the actual save
         await JSRuntime.InvokeVoidAsync("saveMaintenance", currentRecord);

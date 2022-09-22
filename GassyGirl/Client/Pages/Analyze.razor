@@ -81,10 +81,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var maintenance in maintenances.OrderBy(e => e.Item).ThenByDescending(e => e.Date))
+                    @foreach (var maintenance in maintenances
+                        .Where(e => e.CarModel == selectedCar && e.Date >= startTime && e.Date <= endTime)
+                        .OrderBy(e => e.Item)
+                        .ThenByDescending(e => e.Date))
                     {
                         <tr>
-                            <td>@maintenance.Date</td><td>@maintenance.Item</td><td>@maintenance.Odometer</td><td>@maintenance.Notes</td>
+                            <td>@maintenance.Date.ToShortDateString()</td><td>@maintenance.Item</td><td>@maintenance.Odometer</td><td>@maintenance.Notes</td>
                         </tr>
                     }
                 </tbody>

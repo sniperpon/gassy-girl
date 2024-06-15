@@ -10,6 +10,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 * VS Code Firefox debugging [extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug).
 * VS Code Blazor debugging [extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.blazorwasm-companion).
 * Blazor [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0).
+* Blazor Migration to .NET 8 [guide](https://learn.microsoft.com/en-us/aspnet/core/migration/70-80?view=aspnetcore-8.0&tabs=visual-studio#update-a-blazor-webassembly-app).
 * IndexedDB [documentation](https://javascript.info/indexeddb).
 * JavaScript interop [documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-javascript-from-dotnet?view=aspnetcore-6.0#synchronous-js-interop-in-blazor-webassembly-apps).
 * Radzen Chart [API](https://www.radzen.com/documentation/blazor/chart)
@@ -49,7 +50,7 @@ Herein lies the code for the Gassy Girl gas mileage tracker. It is implemented a
 
 * Modify the "base" tag within the wwwroot/index.html file; make sure its path matches the hosted URL-- for example, "/GassyGirl/".
 * From the "GassyGirl/Client" directory, issue this command: dotnet publish -c Release
-* Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net6.0/publish/wwwroot/* /some/destination
+* Issue a copy command to deploy this newly-minted version: cp -R bin/Release/net8.0/publish/wwwroot/* /some/destination
 * Make sure that the wwwroot/.well-known directory gets copied over too.
 * Undo your change to wwwroot/index.html; if you leave it with a path other than "/", "dotnet watch" will no longer work.
 * Access the application at the hosted URL in a browser. You should have the option to install it, as well as use it as a normal web site.
